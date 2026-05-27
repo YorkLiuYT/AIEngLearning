@@ -60,11 +60,32 @@
       <div v-if="tagStats.length === 0" style="font-size: 0.875rem; color: var(--text-secondary)">No tags yet</div>
     </div>
 
+    <!-- Article breakdown -->
+    <h3 style="font-weight: 600; margin: 1rem 0 0.5rem">By Article</h3>
+    <div style="display: flex; flex-direction: column; gap: 0.5rem">
+      <div v-for="a in articleStats" :key="a.id" style="display: flex; align-items: center; gap: 0.5rem">
+        <span style="font-size: 0.875rem; min-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ a.title }}</span>
+        <div style="flex: 1; height: 16px; background: var(--bg-side); border-radius: 6px; overflow: hidden">
+          <div
+            :style="{
+              width: (a.count / stats.total) * 100 + '%',
+              height: '100%',
+              background: 'var(--accent)',
+              borderRadius: '6px',
+            }"
+          />
+        </div>
+        <span style="font-size: 0.875rem; color: var(--text-secondary)">{{ a.count }}</span>
+      </div>
+      <div v-if="articleStats.length === 0" style="font-size: 0.875rem; color: var(--text-secondary)">No articles yet</div>
+    </div>
+
     <!-- Review history -->
     <h3 style="font-weight: 600; margin: 1rem 0 0.5rem">Review History</h3>
     <div style="font-size: 0.875rem; color: var(--text-secondary)">
       Total reviews: {{ totalReviews }} <br>
-      Avg level: {{ avgLevel.toFixed(1) }}
+      Avg level: {{ avgLevel.toFixed(1) }} <br>
+      Articles: {{ store.articles.length }}
     </div>
   </div>
 </template>
@@ -99,6 +120,19 @@ const tagStats = computed(() => {
   return Object.entries(map)
     .sort((a, b) => b[1] - a[1])
     .map(([name, count]) => ({ name, count }));
+});
+
+const articleStats = computed(() => {
+  const map = {};
+  for (const w of store.words) {
+    const aid = w.article_id || '__none__';
+    if (!map[aid]) {
+      const article = store.articles.find(a => a.id === aid);
+      map[aid] = { id: aid, title: article ? article.title : '(no article)', count: 0 };
+    }
+    map[aid].count++;
+  }
+  return Object.values(map).sort((a, b) => b.count - a.count);
 });
 
 const totalReviews = computed(() => {

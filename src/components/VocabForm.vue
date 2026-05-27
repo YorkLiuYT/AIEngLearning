@@ -29,17 +29,38 @@
           <input v-model="tagInput" placeholder="tech, TOEIC_High_Freq" @keydown.enter.prevent="addTag" />
         </div>
       </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem">
+        <div>
+          <label style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem; display: block">Article</label>
+          <select v-model="form.article_id">
+            <option value="">— none —</option>
+            <option v-for="a in articles" :key="a.id" :value="a.id">{{ a.title }}</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem; display: block">Grammar</label>
+          <input v-model="form.grammar" placeholder="e.g. subjunctive mood, passive voice" />
+        </div>
+      </div>
       <div>
         <label style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem; display: block">Example Sentence</label>
         <input v-model="form.example" placeholder="They decided to abandon the project." />
       </div>
       <div>
-        <label style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem; display: block">Context (sentence where you found this word)</label>
-        <input v-model="form.context" placeholder="The company decided to abandon the old system." />
+        <label style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem; display: block">Sentence from Article (original)</label>
+        <input v-model="form.sentence_in_article" placeholder="The original sentence from the article" />
       </div>
       <div>
-        <label style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem; display: block">Source Article</label>
+        <label style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem; display: block">Sentence Translation (中文翻譯)</label>
+        <input v-model="form.sentence_translation" placeholder="文章句子的中文翻譯" />
+      </div>
+      <div>
+        <label style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem; display: block">Source Article (text note)</label>
         <input v-model="form.source_article" placeholder="Daily Article 2026-05-27" />
+      </div>
+      <div>
+        <label style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem; display: block">Context (optional note)</label>
+        <input v-model="form.context" placeholder="The company decided to abandon the old system." />
       </div>
       <div style="display: flex; gap: 0.5rem">
         <button class="btn btn-primary" @click="submit">Save</button>
@@ -56,12 +77,16 @@
 
 <script setup>
 import { reactive, ref, watch } from 'vue';
+import { useVocabStore } from '../stores/vocabStore';
 
 const emit = defineEmits(['save', 'cancel']);
 const props = defineProps({
   editData: Object,
   editId: String,
 });
+
+const store = useVocabStore();
+const articles = store.articles;
 
 const form = reactive({
   word: '',
@@ -70,6 +95,10 @@ const form = reactive({
   example: '',
   context: '',
   source_article: '',
+  article_id: '',
+  sentence_in_article: '',
+  sentence_translation: '',
+  grammar: '',
   tags: [],
 });
 
@@ -83,6 +112,10 @@ watch(() => props.editData, (val) => {
     form.example = val.example || '';
     form.context = val.context || '';
     form.source_article = val.source_article || '';
+    form.article_id = val.article_id || '';
+    form.sentence_in_article = val.sentence_in_article || '';
+    form.sentence_translation = val.sentence_translation || '';
+    form.grammar = val.grammar || '';
     form.tags = [...(val.tags || [])];
   }
 }, { immediate: true });

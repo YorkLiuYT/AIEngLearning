@@ -1,5 +1,5 @@
 <template>
-  <div style="max-width: 800px; margin: 0 auto; padding: 1.5rem">
+  <div style="max-width: 900px; margin: 0 auto; padding: 1.5rem">
     <!-- Add / Edit form -->
     <VocabForm
       v-if="showForm"
@@ -52,11 +52,16 @@
         style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1rem; cursor: pointer"
         @click="openEdit(w)"
       >
-        <div>
+        <div style="flex: 1">
           <div style="font-weight: 600">{{ w.word }}</div>
           <div style="font-size: 0.875rem; color: var(--text-secondary)">{{ w.chinese }}</div>
+          <div v-if="w.grammar" style="font-size: 0.75rem; color: var(--accent)">📝 {{ w.grammar }}</div>
         </div>
-        <div style="display: flex; gap: 0.5rem; align-items: center">
+        <div style="display: flex; gap: 0.5rem; align-items: center; margin-left: 1rem; flex-shrink: 0">
+          <!-- Article badge -->
+          <div v-if="w.article_id && articleTitle(w.article_id)" style="font-size: 0.7rem; color: var(--text-secondary); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">
+            📌 {{ articleTitle(w.article_id) }}
+          </div>
           <div style="font-size: 0.75rem; color: var(--text-secondary)">
             L{{ w.srs.level }} · {{ w.srs.review_count }}x
           </div>
@@ -91,6 +96,11 @@ const filteredWords = computed(() => {
   if (!activeTag.value) return store.words;
   return store.words.filter(w => w.tags && w.tags.includes(activeTag.value));
 });
+
+function articleTitle(articleId) {
+  const a = store.articles.find(a => a.id === articleId);
+  return a ? a.title : '';
+}
 
 function openAddForm() {
   editId.value = '';
@@ -143,7 +153,7 @@ function downloadExport() {
 }
 
 async function clearAll() {
-  if (confirm('Delete ALL words? This cannot be undone.')) {
+  if (confirm('Delete ALL words and articles? This cannot be undone.')) {
     await store.clearAll();
   }
 }

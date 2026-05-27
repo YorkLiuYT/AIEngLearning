@@ -8,6 +8,7 @@
       @navigate="currentTab = $event"
     />
     <StudyView v-if="currentTab === 'study'" />
+    <ArticleView v-if="currentTab === 'articles'" />
     <ManageView v-if="currentTab === 'manage'" />
     <StatsView v-if="currentTab === 'stats'" />
   </div>
@@ -18,6 +19,7 @@ import { ref, onMounted } from 'vue';
 import { useVocabStore } from './stores/vocabStore';
 import NavBar from './components/NavBar.vue';
 import StudyView from './views/StudyView.vue';
+import ArticleView from './views/ArticleView.vue';
 import ManageView from './views/ManageView.vue';
 import StatsView from './views/StatsView.vue';
 
@@ -25,12 +27,12 @@ const store = useVocabStore();
 const currentTab = ref('study');
 const tabs = [
   { id: 'study', label: 'Study' },
+  { id: 'articles', label: 'Articles' },
   { id: 'manage', label: 'Manage' },
   { id: 'stats', label: 'Stats' },
 ];
 
 onMounted(() => {
-  // Apply theme on load
   const t = localStorage.getItem('theme') || 'auto';
   store.setTheme(t);
 });

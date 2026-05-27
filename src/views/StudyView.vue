@@ -10,16 +10,34 @@
     <ProgressBar label="Learning progress" :value="store.progress.learned" :max="Math.max(store.progress.total, 1)" />
 
     <!-- Session mode toggle -->
-    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem">
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap">
       <button class="btn" :class="sessionMode === 'due' ? 'btn-primary' : 'btn-outline'" @click="sessionMode = 'due'">
-        Review Due ({{ store.progress.due }})
+        Review Due ({{ dueCount }})
       </button>
       <button class="btn" :class="sessionMode === 'new' ? 'btn-primary' : 'btn-outline'" @click="sessionMode = 'new'">
-        New Words ({{ store.newWords.length }})
+        New Words ({{ newCount }})
       </button>
       <button class="btn" :class="sessionMode === 'all' ? 'btn-primary' : 'btn-outline'" @click="sessionMode = 'all'">
         All Words
       </button>
+    </div>
+
+    <!-- Article filter -->
+    <div style="margin-bottom: 1rem">
+      <div style="display: flex; gap: 0.25rem; flex-wrap: wrap">
+        <button
+          class="btn btn-outline"
+          :style="activeArticleFilter === '' ? 'background: var(--accent); color: white; border-color: var(--accent)' : ''"
+          @click="activeArticleFilter = ''"
+        >All Articles</button>
+        <button
+          class="btn btn-outline"
+          v-for="a in store.articles"
+          :key="a.id"
+          :style="activeArticleFilter === a.id ? 'background: var(--accent); color: white; border-color: var(--accent)' : ''"
+          @click="activeArticleFilter = a.id"
+        >{{ a.title.length > 20 ? a.title.substring(0, 20) + '…' : a.title }}</button>
+      </div>
     </div>
 
     <!-- Session queue -->
@@ -27,7 +45,7 @@
     <div v-else-if="queue.length === 0" style="text-align: center; padding: 3rem; color: var(--text-secondary)">
       <div style="font-size: 1.5rem; margin-bottom: 1rem">🎉</div>
       <div v-if="sessionMode === 'due'">No words due for review! Great job!</div>
-      <div v-else-if="sessionMode === 'new'">No new words. Add some in Manage tab.</div>
+      <div v-else-if="sessionMode === 'new'">No new words. Add some in Manage or Articles tab.</div>
       <div v-else>No words yet. Go to Manage tab to add words.</div>
     </div>
 
@@ -70,13 +88,23 @@ const sessionMode = ref('due');
 const currentIndex = ref(0);
 const loading = ref(true);
 const showBackupToast = ref(false);
+const activeArticleFilter = ref('');
+
+// Filter words by article if active
+const filteredWords = computed(() => {
+  if (!activeArticleFilter.value) return store.words;
+  return store.words.filter(w => w.article_id === activeArticleFilter.value);
+});
+
+const dueCount = computed(() => filteredWords.value.filter(w => isDueLocal(w.srs)).length);
+const newCount = computed(() => filteredWords.value.filter(w => w.srs.level === 0 && w.srs.review_count === 0).length);
 
 const queue = computed(() => {
-  const words = store.words;
+  const words = filteredWords.value;
   if (sessionMode.value === 'due') {
-    return store.dueWords;
+    return words.filter(w => isDueLocal(w.srs));
   } else if (sessionMode.value === 'new') {
-    return store.newWords;
+    return words.filter(w => w.srs.level === 0 && w.srs.review_count === 0);
   }
   return words;
 });
@@ -86,9 +114,12 @@ const currentWord = computed(() => {
   return queue.value[currentIndex.value];
 });
 
-watch(sessionMode, () => {
-  currentIndex.value = 0;
-});
+watch(sessionMode, () => { currentIndex.value = 0; });
+watch(activeArticleFilter, () => { currentIndex.value = 0; });
+
+function isDueLocal(srs) {
+  return Date.now() >= srs.next_review;
+}
 
 async function markCorrect() {
   if (!currentWord.value) return;
@@ -106,14 +137,12 @@ function advance() {
   if (currentIndex.value < queue.value.length - 1) {
     currentIndex.value++;
   } else {
-    // session complete
     currentIndex.value = 0;
-    // re-evaluate queue (reload)
   }
 }
 
 onMounted(async () => {
-  await store.loadWords();
+  await store.loadAll();
   loading.value = false;
   if (store.checkBackupToast()) {
     showBackupToast.value = true;

@@ -1,10 +1,15 @@
 import { defineStore } from 'pinia';
-import { getAllWords, putWord, deleteWord, importWords, clearAll } from '../lib/db.js';
+import {
+  getAllWords, putWord, deleteWord, importWords, clearWords,
+  getAllArticles, putArticle, deleteArticle, importArticles, clearArticles,
+  getWordsByArticle,
+} from '../lib/db.js';
 import { getDefaultSRS, handleCorrect, handleForget, isDue, getDueCount, getProgress } from '../lib/srs.js';
 
 export const useVocabStore = defineStore('vocab', {
   state: () => ({
     words: [],
+    articles: [],
     loading: true,
     theme: localStorage.getItem('theme') || 'auto',
     backupToastShown: parseInt(localStorage.getItem('backupToastWeek') || '0'),
@@ -27,15 +32,34 @@ export const useVocabStore = defineStore('vocab', {
       }
       return [...tags].sort();
     },
+    allThemes() {
+      const themes = new Set();
+      for (const a of this.articles) {
+        if (a.theme) themes.add(a.theme);
+      }
+      return [...themes].sort();
+    },
+    wordsByArticleId() {
+      const map = {};
+      for (const w of this.words) {
+        const aid = w.article_id || '__none__';
+        if (!map[aid]) map[aid] = [];
+        map[aid].push(w);
+      }
+      return map;
+    },
   },
 
   actions: {
-    async loadWords() {
+    async loadAll() {
       this.loading = true;
       this.words = await getAllWords();
+      this.articles = await getAllArticles();
       this.loading = false;
       this.checkBackupToast();
     },
+
+    // ── Words ──
 
     async addWord(wordData) {
       const id = crypto.randomUUID();
@@ -47,6 +71,10 @@ export const useVocabStore = defineStore('vocab', {
         example: wordData.example || '',
         source_article: wordData.source_article || '',
         context: wordData.context || '',
+        article_id: wordData.article_id || '',
+        sentence_in_article: wordData.sentence_in_article || '',
+        sentence_translation: wordData.sentence_translation || '',
+        grammar: wordData.grammar || '',
         tags: wordData.tags || [],
         srs: getDefaultSRS(),
         created_at: Date.now(),
@@ -86,19 +114,72 @@ export const useVocabStore = defineStore('vocab', {
     },
 
     async importFromJSON(json) {
-      const words = JSON.parse(json);
-      await importWords(words);
-      await this.loadWords();
+      const data = JSON.parse(json);
+      // Support both full export (articles + words) and legacy word-only
+      if (data.articles && Array.isArray(data.articles)) {
+        await importArticles(data.articles);
+      }
+      if (data.words && Array.isArray(data.words)) {
+        await importWords(data.words);
+      } else if (Array.isArray(data)) {
+        await importWords(data);
+      }
+      await this.loadAll();
     },
 
     exportToJSON() {
-      return JSON.stringify(this.words, null, 2);
+      return JSON.stringify({
+        version: 2,
+        exported_at: new Date().toISOString(),
+        articles: this.articles,
+        words: this.words,
+      }, null, 2);
     },
 
     async clearAll() {
-      await clearAll();
+      await clearWords();
+      await clearArticles();
       this.words = [];
+      this.articles = [];
     },
+
+    // ── Articles ──
+
+    async addArticle(articleData) {
+      const id = crypto.randomUUID();
+      const article = {
+        id,
+        title: articleData.title,
+        theme: articleData.theme || '',
+        source: articleData.source || '',
+        full_text: articleData.full_text || '',
+        created_at: Date.now(),
+      };
+      await putArticle(article);
+      this.articles.push(article);
+      return article;
+    },
+
+    async updateArticle(id, updates) {
+      const idx = this.articles.findIndex(a => a.id === id);
+      if (idx === -1) return;
+      const updated = { ...this.articles[idx], ...updates };
+      await putArticle(updated);
+      this.articles[idx] = updated;
+    },
+
+    async deleteArticle(id) {
+      // Remove all words belonging to this article
+      const wordsToDelete = this.words.filter(w => w.article_id === id);
+      for (const w of wordsToDelete) {
+        await deleteWord(w.id);
+      }
+      this.words = this.words.filter(w => w.article_id !== id);
+      await deleteArticle(id);
+      this.articles = this.articles.filter(a => a.id !== id);
+    },
+
+    // ── Theme ──
 
     setTheme(t) {
       this.theme = t;
@@ -110,10 +191,10 @@ export const useVocabStore = defineStore('vocab', {
       const now = new Date();
       const weekStart = getWeekStart(now);
       const stored = parseInt(localStorage.getItem('backupToastWeek') || '0');
-      if (stored < weekStart && this.words.length > 0) {
+      if (stored < weekStart && (this.words.length > 0 || this.articles.length > 0)) {
         this.backupToastShown = weekStart;
         localStorage.setItem('backupToastWeek', String(weekStart));
-        return true; // caller can show toast
+        return true;
       }
       return false;
     },
@@ -134,7 +215,6 @@ function applyTheme(t) {
   } else if (t === 'light') {
     root.classList.remove('dark');
   } else {
-    // auto
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     root.classList.toggle('dark', mq.matches);
   }
