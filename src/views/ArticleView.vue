@@ -71,7 +71,15 @@
 
       <!-- Article header -->
       <div class="card" style="padding: 1rem; margin-bottom: 1rem">
-        <h2 style="font-weight: 700; margin-bottom: 0.5rem">{{ selectedArticle.title }}</h2>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.5rem">
+          <h2 style="font-weight: 700">{{ selectedArticle.title }}</h2>
+          <button
+            class="btn btn-outline"
+            style="font-size: 0.75rem; padding: 0.25rem 0.5rem; flex-shrink: 0"
+            @click="readArticleAloud"
+            title="Read article aloud"
+          >🔊 Read Aloud</button>
+        </div>
         <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 1rem">
           <span v-if="selectedArticle.theme">Theme: {{ selectedArticle.theme }}</span>
           <span v-if="selectedArticle.source"> · Source: {{ selectedArticle.source }}</span>
@@ -130,6 +138,7 @@
 import { ref, computed } from 'vue';
 import { useVocabStore } from '../stores/vocabStore';
 import ArticleForm from '../components/ArticleForm.vue';
+import { speak } from '../lib/speech.js';
 
 const store = useVocabStore();
 const viewMode = ref('list');
@@ -242,5 +251,17 @@ async function deleteWordFromArticle(id) {
   if (confirm('Delete this word?')) {
     await store.deleteWord(id);
   }
+}
+
+let reading = false;
+async function readArticleAloud() {
+  if (reading || !selectedArticle.value?.full_text) return;
+  reading = true;
+  try {
+    await speak(selectedArticle.value.full_text);
+  } catch (e) {
+    console.warn('TTS failed:', e.message);
+  }
+  reading = false;
 }
 </script>

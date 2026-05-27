@@ -17,7 +17,13 @@
 
       <!-- Sentence from article + translation -->
       <div v-if="word.sentence_in_article" style="font-size: 1rem; font-style: italic; color: var(--text-secondary); margin-bottom: 0.25rem; padding: 0 1rem">
-        "{{ word.sentence_in_article }}"
+        <span>"{{ word.sentence_in_article }}"</span>
+        <button
+          class="btn btn-outline"
+          style="font-size: 0.75rem; padding: 0.15rem 0.4rem; margin-left: 0.4rem; vertical-align: middle"
+          @click.stop="doSpeakSentence"
+          title="Read sentence"
+        >🔊</button>
       </div>
       <div v-if="word.sentence_translation" style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.75rem">
         → {{ word.sentence_translation }}
@@ -79,6 +85,17 @@ async function doSpeak() {
   speaking = true;
   try {
     await speak(props.word.word);
+  } catch (e) {
+    console.warn('TTS failed:', e.message);
+  }
+  speaking = false;
+}
+
+async function doSpeakSentence() {
+  if (speaking || !props.word.sentence_in_article) return;
+  speaking = true;
+  try {
+    await speak(props.word.sentence_in_article);
   } catch (e) {
     console.warn('TTS failed:', e.message);
   }
