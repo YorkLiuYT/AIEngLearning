@@ -19,6 +19,22 @@
         {{ progress.due }} due · {{ progress.learned }} learned
       </span>
       <select
+        :value="store.ttsVoice"
+        @change="store.setTTSVoice($event.target.value)"
+        style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.75rem"
+        title="TTS voice"
+      >
+        <option value="auto">Voice: Auto</option>
+        <option value="en-US">🇺🇸 US</option>
+        <option value="en-GB">🇬🇧 UK</option>
+      </select>
+      <button
+        class="btn btn-outline"
+        style="font-size: 0.75rem; padding: 0.25rem 0.5rem"
+        @click="store.toggleAutoPlay()"
+        :title="store.ttsAutoPlay ? 'Auto-play ON' : 'Auto-play OFF'"
+      >🔁 {{ store.ttsAutoPlay ? 'ON' : 'OFF' }}</button>
+      <select
         :value="theme"
         @change="store.setTheme($event.target.value)"
         style="width: auto; padding: 0.25rem 0.5rem; font-size: 0.875rem"

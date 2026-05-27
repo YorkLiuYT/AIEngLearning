@@ -13,6 +13,8 @@ export const useVocabStore = defineStore('vocab', {
     loading: true,
     theme: localStorage.getItem('theme') || 'auto',
     backupToastShown: parseInt(localStorage.getItem('backupToastWeek') || '0'),
+    ttsVoice: localStorage.getItem('ttsVoice') || 'auto',
+    ttsAutoPlay: localStorage.getItem('ttsAutoPlay') === '1',
   }),
 
   getters: {
@@ -208,6 +210,16 @@ export const useVocabStore = defineStore('vocab', {
       this.theme = t;
       localStorage.setItem('theme', t);
       applyTheme(t);
+    },
+
+    setTTSVoice(v) {
+      this.ttsVoice = v;
+      localStorage.setItem('ttsVoice', v);
+    },
+
+    toggleAutoPlay() {
+      this.ttsAutoPlay = !this.ttsAutoPlay;
+      localStorage.setItem('ttsAutoPlay', this.ttsAutoPlay ? '1' : '');
     },
 
     checkBackupToast() {

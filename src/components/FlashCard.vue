@@ -2,6 +2,12 @@
   <div class="card" style="text-align: center; min-height: 320px; display: flex; flex-direction: column; justify-content: center; align-items: center; cursor: pointer; user-select: none" @click="flip">
     <div v-if="!flipped" key="front" style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem">
       {{ word.word }}
+      <button
+        class="btn btn-outline"
+        style="font-size: 1rem; padding: 0.25rem 0.5rem; margin-left: 0.5rem; vertical-align: middle"
+        @click.stop="doSpeak"
+        title="Pronounce"
+      >🔊</button>
     </div>
     <div v-else key="back" style="width: 100%">
       <div style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.25rem">{{ word.chinese }}</div>
@@ -53,6 +59,7 @@
 
 <script setup>
 import { ref } from 'vue';
+import { speak } from '../lib/speech.js';
 
 const props = defineProps({
   word: Object,
@@ -64,5 +71,17 @@ function flip() {
   if (props.mode === 'flashcard') {
     flipped.value = !flipped.value;
   }
+}
+
+let speaking = false;
+async function doSpeak() {
+  if (speaking) return;
+  speaking = true;
+  try {
+    await speak(props.word.word);
+  } catch (e) {
+    console.warn('TTS failed:', e.message);
+  }
+  speaking = false;
 }
 </script>

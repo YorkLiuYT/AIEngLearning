@@ -114,8 +114,17 @@ const currentWord = computed(() => {
   return queue.value[currentIndex.value];
 });
 
+import { speak } from '../lib/speech.js';
+
 watch(sessionMode, () => { currentIndex.value = 0; });
 watch(activeArticleFilter, () => { currentIndex.value = 0; });
+
+// Auto-play: speak when current word changes
+watch(currentWord, (word) => {
+  if (word && store.ttsAutoPlay) {
+    speak(word.word).catch(() => {});
+  }
+});
 
 function isDueLocal(srs) {
   return Date.now() >= srs.next_review;
