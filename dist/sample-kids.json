@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "exported_at": "2024-01-01T00:00:00.000Z",
+  "articles": [
+    {
+      "id": "kids_article_cat",
+      "title": "The Little Cat 🐱",
+      "title_cn": "小貓咪",
+      "image": "/kids/cat.png",
+      "sentences": [
+        "The cat is small.",
+        "The cat is orange.",
+        "The cat likes milk.",
+        "The cat sleeps a lot.",
+        "I love my cat."
+      ],
+      "sentences_cn": [
+        "貓咪很小。",
+        "貓咪是橘色的。",
+        "貓咪喜歡牛奶。",
+        "貓咪很愛睡覺。",
+        "我愛我的貓咪。"
+      ],
+      "level": "kids"
+    },
+    {
+      "id": "kids_article_rainbow",
+      "title": "The Rainbow 🌈",
+      "title_cn": "彩虹",
+      "image": "/kids/rainbow.png",
+      "sentences": [
+        "Look up! The sky has colors.",
+        "Red, orange, yellow, green, blue.",
+        "The rainbow is beautiful.",
+        "It makes me happy."
+      ],
+      "sentences_cn": [
+        "看上面！天空有顏色。",
+        "紅色、橙色、黃色、綠色、藍色。",
+        "彩虹好漂亮。",
+        "它讓我好開心。"
+      ],
+      "level": "kids"
+    },
+    {
+      "id": "kids_article_bunny",
+      "title": "The Bunny 🐰",
+      "title_cn": "小兔子",
+      "image": "/kids/bunny.png",
+      "sentences": [
+        "A bunny hops.",
+        "It has white fur.",
+        "It eats carrots.",
+        "The bunny is cute.",
+        "It lives in a garden."
+      ],
+      "sentences_cn": [
+        "小兔子跳跳跳。",
+        "牠有白色的毛。",
+        "牠吃紅蘿蔔。",
+        "小兔子好可愛。",
+        "牠住在花園裡。"
+      ],
+      "level": "kids"
+    },
+    {
+      "id": "kids_article_bear",
+      "title": "The Teddy Bear 🧸",
+      "title_cn": "泰迪熊",
+      "image": "/kids/bear.png",
+      "sentences": [
+        "My bear is soft.",
+        "We eat apples.",
+        "We sit under a tree.",
+        "The sun is warm.",
+        "What a nice day!"
+      ],
+      "sentences_cn": [
+        "我的熊熊軟軟的。",
+        "我們吃蘋果。",
+        "我們坐在樹下。",
+        "太陽暖暖的。",
+        "真是美好的一天！"
+      ],
+      "level": "kids"
+    },
+    {
+      "id": "kids_article_duck",
+      "title": "The Little Duck 🦆",
+      "title_cn": "小鴨子",
+      "image": "/kids/duck.png",
+      "sentences": [
+        "A duck swims.",
+        "It is yellow.",
+        "Ducks say quack.",
+        "Baby ducks follow mom.",
+        "The pond is fun."
+      ],
+      "sentences_cn": [
+        "小鴨子游泳。",
+        "牠是黃色的。",
+        "鴨子嘎嘎叫。",
+        "鴨寶寶跟著媽媽。",
+        "池塘好好玩。"
+      ],
+      "level": "kids"
+    }
+  ],
+  "words": [
+    { "id": "kids_word_cat", "word": "cat", "chinese": "貓咪", "part_of_speech": "noun", "article_id": "kids_article_cat", "sentence_in_article": "The cat is small.", "sentence_translation": "貓咪很小。", "grammar": "", "tags": ["kids"], "srs": 0, "created_at": "2024-01-01T00:00:00.000Z" },
+    { "id": "kids_word_milk", "word": "milk", "chinese": "牛奶", "part_of_speech": "noun", "article_id": "kids_article_cat", "sentence_in_article": "The cat likes milk.", "sentence_translation": "貓咪喜歡牛奶。", "grammar": "", "tags": ["kids"], "srs": 0, "created_at": "2024-01-01T00:00:00.000Z" },
+    { "id": "kids_word_rainbow", "word": "rainbow", "chinese": "彩虹", "part_of_speech": "noun", "article_id": "kids_article_rainbow", "sentence_in_article": "The rainbow is beautiful.", "sentence_translation": "彩虹好漂亮。", "grammar": "", "tags": ["kids"], "srs": 0, "created_at": "2024-01-01T00:00:00.000Z" },
+    { "id": "kids_word_sky", "word": "sky", "chinese": "天空", "part_of_speech": "noun", "article_id": "kids_article_rainbow", "sentence_in_article": "Look up! The sky has colors.", "sentence_translation": "看上面！天空有顏色。", "grammar": "", "tags": ["kids"], "srs": 0, "created_at": "2024-01-01T00:00:00.000Z" },
+    { "id": "kids_word_bunny", "word": "bunny", "chinese": "小兔子", "part_of_speech": "noun", "article_id": "kids_article_bunny", "sentence_in_article": "A bunny hops.", "sentence_translation": "小兔子跳跳跳。", "grammar": "", "tags": ["kids"], "srs": 0, "created_at": "2024-01-01T00:00:00.000Z" },
+    { "id": "kids_word_hop", "word": "hop", "chinese": "跳", "part_of_speech": "verb", "article_id": "kids_article_bunny", "sentence_in_article": "A bunny hops.", "sentence_translation": "小兔子跳跳跳。", "grammar": "", "tags": ["kids"], "srs": 0, "created_at": "2024-01-01T00:00:00.000Z" },
+    { "id": "kids_word_carrot", "word": "carrot", "chinese": "紅蘿蔔", "part_of_speech": "noun", "article_id": "kids_article_bunny", "sentence_in_article": "It eats carrots.", "sentence_translation": "牠吃紅蘿蔔。", "grammar": "", "tags": ["kids"], "srs": 0, "created_at": "2024-01-01T00:00:00.000Z" },
+    { "id": "kids_word_bear", "word": "bear", "chinese": "熊熊", "part_of_speech": "noun", "article_id": "kids_article_bear", "sentence_in_article": "My bear is soft.", "sentence_translation": "我的熊熊軟軟的。", "grammar": "", "tags": ["kids"], "srs": 0, "created_at": "2024-01-01T00:00:00.000Z" },
+    { "id": "kids_word_apple", "word": "apple", "chinese": "蘋果", "part_of_speech": "noun", "article_id": "kids_article_bear", "sentence_in_article": "We eat apples.", "sentence_translation": "我們吃蘋果。", "grammar": "", "tags": ["kids"], "srs": 0, "created_at": "2024-01-01T00:00:00.000Z" },
+    { "id": "kids_word_duck", "word": "duck", "chinese": "鴨子", "part_of_speech": "noun", "article_id": "kids_article_duck", "sentence_in_article": "A duck swims.", "sentence_translation": "小鴨子游泳。", "grammar": "", "tags": ["kids"], "srs": 0, "created_at": "2024-01-01T00:00:00.000Z" },
+    { "id": "kids_word_pond", "word": "pond", "chinese": "池塘", "part_of_speech": "noun", "article_id": "kids_article_duck", "sentence_in_article": "The pond is fun.", "sentence_translation": "池塘好好玩。", "grammar": "", "tags": ["kids"], "srs": 0, "created_at": "2024-01-01T00:00:00.000Z" }
+  ]
+}
