@@ -71,13 +71,28 @@ export const useVocabStore = defineStore('vocab', {
             if (data.words && data.words.length > 0) {
               await importWords(data.words);
             }
-            // Reload from DB
-            this.words = await getAllWords();
-            this.articles = await getAllArticles();
           }
         } catch (e) {
           console.warn('Auto-load sample data failed:', e.message);
         }
+        // Also load kids picture-book sample data
+        try {
+          const resp2 = await fetch('./sample-kids.json');
+          if (resp2.ok) {
+            const data2 = await resp2.json();
+            if (data2.articles && data2.articles.length > 0) {
+              await importArticles(data2.articles);
+            }
+            if (data2.words && data2.words.length > 0) {
+              await importWords(data2.words);
+            }
+          }
+        } catch (e) {
+          console.warn('Auto-load kids sample data failed:', e.message);
+        }
+        // Reload from DB
+        this.words = await getAllWords();
+        this.articles = await getAllArticles();
         localStorage.setItem('sampleLoaded', '1');
       }
 

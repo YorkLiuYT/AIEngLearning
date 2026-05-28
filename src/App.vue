@@ -8,6 +8,7 @@
       @navigate="currentTab = $event"
     />
     <StudyView v-if="currentTab === 'study'" />
+    <KidsView v-if="currentTab === 'kids'" />
     <ArticleView v-if="currentTab === 'articles'" />
     <ManageView v-if="currentTab === 'manage'" />
     <StatsView v-if="currentTab === 'stats'" />
@@ -22,11 +23,13 @@ import StudyView from './views/StudyView.vue';
 import ArticleView from './views/ArticleView.vue';
 import ManageView from './views/ManageView.vue';
 import StatsView from './views/StatsView.vue';
+import KidsView from './views/KidsView.vue';
 
 const store = useVocabStore();
 const currentTab = ref('study');
 const tabs = [
   { id: 'study', label: 'Study' },
+  { id: 'kids', label: '📚 Kids' },
   { id: 'articles', label: 'Articles' },
   { id: 'manage', label: 'Manage' },
   { id: 'stats', label: 'Stats' },
