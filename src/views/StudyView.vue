@@ -119,10 +119,15 @@ import { speak } from '../lib/speech.js';
 watch(sessionMode, () => { currentIndex.value = 0; });
 watch(activeArticleFilter, () => { currentIndex.value = 0; });
 
-// Auto-play: speak when current word changes
+// Auto-play: speak word + sentence when current word changes
 watch(currentWord, (word) => {
   if (word && store.ttsAutoPlay) {
     speak(word.word).catch(() => {});
+    // Also auto-play sentence if available
+    if (word.sentence_in_article) {
+      // Small delay so word finishes first
+      setTimeout(() => speak(word.sentence_in_article).catch(() => {}), 1500);
+    }
   }
 });
 

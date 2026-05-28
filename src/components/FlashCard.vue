@@ -75,7 +75,12 @@ const props = defineProps({
 const flipped = ref(false);
 function flip() {
   if (props.mode === 'flashcard') {
-    flipped.value = !flipped.value;
+    const nowFlipped = !flipped.value;
+    flipped.value = nowFlipped;
+    // Auto-speak sentence when flipping to back side
+    if (nowFlipped && props.word.sentence_in_article) {
+      speak(props.word.sentence_in_article).catch(() => {});
+    }
   }
 }
 

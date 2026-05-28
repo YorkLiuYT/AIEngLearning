@@ -59,8 +59,8 @@ export const useVocabStore = defineStore('vocab', {
       this.articles = await getAllArticles();
       this.loading = false;
 
-      // Auto-load sample data on first visit
-      if (this.words.length === 0 && this.articles.length === 0 && !localStorage.getItem('sampleLoaded')) {
+      // Auto-load sample data when DB is empty (first visit OR after cache clear)
+      if (this.words.length === 0 && this.articles.length === 0) {
         try {
           const resp = await fetch('./sample-articles.json');
           if (resp.ok) {
