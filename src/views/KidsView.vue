@@ -17,7 +17,7 @@
       >
         <div
           style="height: 200px; background-size: cover; background-position: center; background-repeat: no-repeat"
-          :style="{ backgroundImage: article.image ? `url(${article.image})` : 'linear-gradient(135deg, var(--accent-light), var(--accent))' }"
+          :style="{ backgroundImage: article.image ? `url(${resolveImage(article.image)})` : 'linear-gradient(135deg, var(--accent-light), var(--accent))' }"
         ></div>
         <div style="padding: 1rem">
           <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.25rem">{{ article.title }}</div>
@@ -42,7 +42,7 @@
         style="width: 100%; max-height: 400px; border-radius: 16px; overflow: hidden; margin-bottom: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.1)"
       >
         <img
-          :src="selectedStory.image"
+          :src="resolveImage(selectedStory.image)"
           :alt="selectedStory.title"
           style="width: 100%; height: 100%; object-fit: cover"
           loading="lazy"
@@ -113,6 +113,15 @@ import { speak } from '../lib/speech.js';
 
 const store = useVocabStore();
 const selectedStory = ref(null);
+
+function resolveImage(path) {
+  if (!path) return '';
+  // If path starts with /, prepend the base URL for GitHub Pages
+  if (path.startsWith('/')) {
+    return '/AIEngLearning' + path;
+  }
+  return path;
+}
 
 const kidsArticles = computed(() => {
   return store.articles.filter(a => a.level === 'kids' || a.image);
