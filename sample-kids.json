@@ -6,7 +6,7 @@
       "id": "kids_article_cat",
       "title": "The Little Cat 🐱",
       "title_cn": "小貓咪",
-      "image": "/kids/cat.png",
+      "image": "kids/cat.png",
       "sentences": [
         "The cat is small.",
         "The cat is orange.",
@@ -27,7 +27,7 @@
       "id": "kids_article_rainbow",
       "title": "The Rainbow 🌈",
       "title_cn": "彩虹",
-      "image": "/kids/rainbow.png",
+      "image": "kids/rainbow.png",
       "sentences": [
         "Look up! The sky has colors.",
         "Red, orange, yellow, green, blue.",
@@ -46,7 +46,7 @@
       "id": "kids_article_bunny",
       "title": "The Bunny 🐰",
       "title_cn": "小兔子",
-      "image": "/kids/bunny.png",
+      "image": "kids/bunny.png",
       "sentences": [
         "A bunny hops.",
         "It has white fur.",
@@ -67,7 +67,7 @@
       "id": "kids_article_bear",
       "title": "The Teddy Bear 🧸",
       "title_cn": "泰迪熊",
-      "image": "/kids/bear.png",
+      "image": "kids/bear.png",
       "sentences": [
         "My bear is soft.",
         "We eat apples.",
@@ -88,7 +88,7 @@
       "id": "kids_article_duck",
       "title": "The Little Duck 🦆",
       "title_cn": "小鴨子",
-      "image": "/kids/duck.png",
+      "image": "kids/duck.png",
       "sentences": [
         "A duck swims.",
         "It is yellow.",
